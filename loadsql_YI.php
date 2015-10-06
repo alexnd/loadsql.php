@@ -1,34 +1,53 @@
 <?php
 /*
- * loadsql.php
+ * loadsql.php - YII Version of loadsql.php
  * Simple 1-script solution for loading SQL files into MySQL database.
- * Howto:
- * 1 - Place it into document root, 
- * 2 - Provide dbconfig.php with global set of $db_* variables
- * 3 - Provide db.sql 
- * 4 - run (repeat if necessary, for example - on errors)
- * 5 - delete all unnecessary and keep some for continuous migrations^)^
+ * Tested on yii2 branch, so, by default:
+ * - run it from document root (web)
+ * - the location of SQL-s are 1 step up from web root
+ * - optionally tune db location cfg (on yii-1.x it different)
  * @author: Alexander Melanchenko (info@alexnd.com)
  */
 
-if(!file_exists('dbconfig.php')) die('No config found'); else require 'dbconfig.php';
+$sqlfile = '../migrate.sql';
+if( !( file_exists($sqlfile) && is_file($sqlfile) ) ) $sqlfile = '../update.sql';
+if( !( file_exists($sqlfile) && is_file($sqlfile) ) ) $sqlfile = '../db.sql';
 
-if(!isset($db_host)) $db_host = 'localhost';
-if(!isset($db_login)) $db_login = 'root';
-if(!isset($db_password)) $db_password = '';
-if(!isset($db_name)) $db_name = '';
-if(!isset($db_charset)) $db_charset = 'utf8';
+$loadsql_debug = FALSE;
+$loadsql_verbose = TRUE;
 
-$sqlfile = 'migrate.sql';
-if( !( file_exists($sqlfile) && is_file($sqlfile) ) ) $sqlfile = 'update.sql';
-if( !( file_exists($sqlfile) && is_file($sqlfile) ) ) $sqlfile = 'db.sql';
+if (!defined('YII_DEBUG')) define('YII_DEBUG', false);
 
-$debug = FALSE;
-$verbose = TRUE;
+@set_time_limit(0);
 
-set_time_limit(0);
+@header('Content-Type: text/plain; charset=UTF-8');
 
-header('Content-Type: text/plain; charset=UTF-8');
+if(file_exists('../config/db.local.php')) {
+	$cfg = include '../config/db.local.php';
+} else if(file_exists('../config/db.php')) {
+	$cfg = include '../config/db.php';
+} else if(file_exists('protected/config/main.php')) {
+	$cfg = include 'protected/config/main.php';
+	if (isset($cfg['components']) && isset($cfg['components']['db'])) $cfg = $cfg['components']['db'];
+} else {
+	die('No db config found');
+}
+
+$db_login = $cfg['username'];
+$db_password = $cfg['password'];
+$db_charset = $cfg['charset'];
+
+$db_dsn = '';
+if (isset($cfg['dsn'])) $db_dsn = $cfg['dsn'];
+if (isset($cfg['connectionString'])) $db_dsn = $cfg['connectionString'];
+
+$m = [];
+if (preg_match('/host\=([^;]+);/i', $db_dsn, $m)) {
+    $db_host = $m[1];
+}
+if (preg_match('/dbname\=([^;]+);*/i', $db_dsn, $m)) {
+    $db_name = $m[1];
+}
 
 if( !(file_exists($sqlfile) && is_file($sqlfile)) ) die('Error: cannot locate SQL file');
 if( !strlen($db_name) ) die('Error: DB name not set');
@@ -52,16 +71,16 @@ if( count($data) )
 	
 	function _load_sql( $sql )
 	{
-		global $db_link, $debug, $verbose, $errors_count;
-		if( !$debug && $verbose )
+		global $db_link, $loadsql_debug, $loadsql_verbose, $errors_count;
+		if( !$loadsql_debug && $loadsql_verbose )
 		{
 			echo 'Execute SQL:'.PHP_EOL;
 		}
-		if( $verbose )
+		if( $loadsql_verbose )
 		{
 			echo $sql.PHP_EOL.PHP_EOL;
 		}
-		if( !$debug )
+		if( !$loadsql_debug )
 		{
 			mysql_query($sql, $db_link);
 			$er = mysql_errno( $db_link );

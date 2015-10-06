@@ -1,15 +1,27 @@
 loadsql
 =======
 
-Simple script (1 php file) for loading SQL files into MySQL database.
+Simple 1-script solution for loading SQL files into MySQL database.
 
-Have possibility to integrate into an existing Kohana3.x or CodeIgniter PHP application.
+Have possibility to integrate into an existing PHP applications:
+
+- CodeIgniter
+
+- Kohana3.x
+
+- YII2 and YII1
+
+TODO:
+
+- Buffered while-loop load instead of file() to avoid memory limit
+
+- Laravel integration
+
+- Extend platform support, Nodejs version
 
 ## Usage
 
-* Copy loadsql.php into document root.
-
-* Optionally, you can also take one of loadsql_XX.php, where XX are "KO" or "CI" - extensions that matches Kohana or CodeIgniter explicitly.
+* Place loadsql.php into document root, take one of loadsql_XX.php for vendored PHP apps, where XX matches explicitly: "KO" -Kohana, "CI" - CodeIgniter, "YI" - Yii
 
 * Tune vars, if needed (it self-explanatory):
 
@@ -23,13 +35,7 @@ $debug ,
 $verbose
 ```
 
-* or uncomment desired line:
-
-```
-  require('loadsql_XX.php');
-```
-
-* Create SQL file(s) at the same dir:
+* Create SQL file(s) (at the same dir, or 1-level upper, as desired on your environment):
 
   migrate.sql or update.sql or db.sql
 
