@@ -11,17 +11,18 @@ Have possibility to integrate into an existing PHP applications:
 
 - YII2 and YII1
 
+- Phalcon
+
 TODO:
 
 - Buffered while-loop load instead of file() to avoid memory limit
 
-- Laravel integration
-
-- Extend platform support, Nodejs version
+- Laravel version
 
 ## Usage
 
-* Place loadsql.php into document root, take one of loadsql_XX.php for vendored PHP apps, where XX matches explicitly: "KO" -Kohana, "CI" - CodeIgniter, "YI" - Yii
+* Place loadsql.php into document root, take one of loadsql_XX.php for vendored PHP apps, where XX matches explicitly:
+"KO" -Kohana, "CI" - CodeIgniter, "YI" - Yii, "PH" - Phalcon
 
 * Tune vars, if needed (it self-explanatory):
 
