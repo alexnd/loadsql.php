@@ -15,9 +15,7 @@ Have possibility to integrate into an existing PHP applications:
 
 TODO:
 
-- Buffered while-loop load instead of file() to avoid memory limit
-
-- Laravel version
+- Laravel, Symfony version
 
 ## Usage
 

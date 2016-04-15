@@ -53,8 +53,8 @@ if( !(file_exists($sqlfile) && is_file($sqlfile)) ) die('Error: cannot locate SQ
 if( !strlen($db_name) ) die('Error: DB name not set');
 
 $sql = '';
-$data = file($sqlfile);
-if( count($data) )
+$fp = fopen($sqlfile, 'rt');
+if ($fp)
 {
 	$db_link = mysql_connect( $db_host, $db_login, $db_password);
 	if( !$db_link )
@@ -90,12 +90,13 @@ if( count($data) )
 				echo PHP_EOL.'Error:'.PHP_EOL.mysql_error( $db_link ).PHP_EOL.PHP_EOL;
 			}
 		}
+		flush();
 	}
 
 	$comment_opened = FALSE;
-	foreach( $data as $row )
+	while (!feof($fp))
 	{
-		$row = trim($row);
+		$row = trim(fgets($fp));
 		if( $row == '' ) continue;
 
 		#TODO: check for comments

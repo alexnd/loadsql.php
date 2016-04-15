@@ -60,8 +60,8 @@ if( !( file_exists($sqlfile) && is_file($sqlfile) ) ) $sqlfile = 'db.sql';
 if( !( file_exists($sqlfile) && is_file($sqlfile) ) ) die('Error: cannot locate SQL file');
 
 $sql = '';
-$data = file($sqlfile);
-if( count($data) )
+$fp = fopen($sqlfile, 'rt');
+if ($fp)
 {
     $errors_count = 0;
 
@@ -86,12 +86,13 @@ if( count($data) )
                 echo PHP_EOL.'Error:'.PHP_EOL.mysql_error( $db_link ).PHP_EOL.PHP_EOL;
             }
         }
+		flush();
     }
 
     $comment_opened = FALSE;
-    foreach( $data as $row )
+    while (!feof($fp))
     {
-        $row = trim($row);
+        $row = trim(fgets($fp));
         if( $row == '' ) continue;
 
 #TODO: check for comments
