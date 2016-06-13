@@ -125,7 +125,7 @@ if ($fp)
 		_load_sql( $sql );
 	}
 	echo PHP_EOL.'DONE';
-	if( $errors_count ) echo PHP_EOL.$errors_count.' errors happend'.PHP_EOL;
+	if( $errors_count ) echo PHP_EOL.$errors_count.' errors happened'.PHP_EOL;
 }
 
 if( $sql == '' ) die('Error: no SQL data found');
